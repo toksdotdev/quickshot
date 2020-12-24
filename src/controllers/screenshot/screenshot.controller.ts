@@ -19,7 +19,7 @@ class ScreenshotController {
     }
 
     try {
-      const imageUrl = await this.screenshotService.fetchOrCapture(uri);
+      const imageUrl = await this.screenshotService.getOrScreenshot(uri);
       logger.info(`Screenshot for [${uri}] is [${imageUrl}]`);
 
       return res

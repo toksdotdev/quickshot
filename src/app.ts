@@ -5,12 +5,14 @@ import compression from "compression";
 
 import * as api from "./controllers";
 
+
 // Express Server
 const app = express();
 app.use(cors());
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 // APIs
 api.configure(app);

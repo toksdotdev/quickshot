@@ -1,4 +1,5 @@
 import logger from "../utils/logger";
+import * as metrics from "../metrics";
 import RedisService from "./redis.service";
 import StorageService from "./storage.service";
 import puppeteer, { Browser } from "puppeteer";
@@ -43,23 +44,22 @@ class ScreenshotService {
    *
    * @param url URL to screenshot.
    */
-  public async fetchOrCapture(url: string): Promise<string> {
-    const formattedUrl = this.cleanUrl(url);
+  public async getOrScreenshot(url: string): Promise<string> {
+    const basicUrl = this.cleanUrl(url);
 
     // Fetch from cache if exist.
-    const screenshotUrl = await this.redisService.getScreenshotUrl(
-      formattedUrl
-    );
-
+    const screenshotUrl = await this.redisService.getScreenshotUrl(basicUrl);
     if (screenshotUrl) {
+      metrics.urlScreenshots.inc({ cached: 1 });
       logger.info(`Screenshot URL [${url}] found in cache as ${screenshotUrl}`);
       return screenshotUrl;
     }
-    
-    // Capture & Upload Image.
-    const image = await this.screenshot(url);  
+
+    // Capture Image.
+    const image = await this.screenshot(url);
     logger.info(`Screenshot URL [${url}] captured; Now uploading to storage.`);
 
+    // Upload Image to Store.
     const result = await this.storageService.upload(image);
     logger.info(
       `Screenshot URL [${url}] uploaded to storage successfully with meta ${JSON.stringify(
@@ -67,8 +67,8 @@ class ScreenshotService {
       )}.`
     );
 
-    // Cache image URL.
-    await this.redisService.setScreenshotUrl(formattedUrl, result.url);
+    // Cache Screenshot to URL.
+    await this.redisService.setScreenshotUrl(basicUrl, result.url);
     logger.info(
       `Screenshot URL [${url}] with [${result.url}] saved to cache successfully.`
     );
@@ -83,12 +83,18 @@ class ScreenshotService {
   async screenshot(url: string): Promise<Buffer> {
     await this.setup();
 
-    const page = await this.browser.newPage();
-    await page.goto(url);
-    const image = await page.screenshot({ fullPage: true });
-    page.close();
+    try {
+      const page = await this.browser.newPage();
+      await page.goto(url);
+      const image = await page.screenshot({ fullPage: true });
+      page.close();
 
-    return image;
+      metrics.urlScreenshots.inc({ success: 1 });
+      return image;
+    } catch (err) {
+      metrics.urlScreenshots.inc({ failed: 1 });
+      throw err;
+    }
   }
 }
 

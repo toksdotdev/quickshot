@@ -30,6 +30,7 @@
         "errorhandler": "^1.5.1",
         "express": "^4.17.1",
         "ioredis": "^4.19.4",
+        "prom-client": "^13.0.0",
         "puppeteer": "^5.5.0",
         "puppeteer-core": "^5.5.0",
         "typescript-ioc": "^3.2.2",
