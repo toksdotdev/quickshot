@@ -1,6 +1,6 @@
 import RedisService from "../services/redis.service";
 import StorageService from "../services/storage.service";
-import ScreenshotService from "../services/screenshot.service";
+import ScreenshotService from "../services/screenshot/screenshot.service";
 import { Container, ContainerConfiguration, Scope } from "typescript-ioc";
 
 const mapping: Array<ContainerConfiguration> = [

@@ -1,7 +1,8 @@
 import logger from "../../utils/logger";
 import { Request, Response } from "express";
 import { isUriValid } from "../../utils/validator";
-import ScreenshotService from "../../services/screenshot.service";
+import { InvalidUrlException } from "../../services/screenshot/exceptions";
+import ScreenshotService from "../../services/screenshot/screenshot.service";
 
 class ScreenshotController {
   constructor(private screenshotService: ScreenshotService) {}
@@ -28,9 +29,13 @@ class ScreenshotController {
     } catch (err) {
       logger.error(`Screenshot for ${uri} failed with error: `, err);
 
-      return res
-        .json({ msg: "Error occured while uploading file." })
-        .status(500);
+      let [code, msg] = [500, "Internal server error"];
+      if (err instanceof InvalidUrlException) {
+        msg = err.message;
+        code = err.code;
+      }
+
+      return res.json({ msg }).status(code);
     }
   }
 }

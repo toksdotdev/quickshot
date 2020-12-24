@@ -1,8 +1,9 @@
-import logger from "../utils/logger";
-import * as metrics from "../metrics";
-import RedisService from "./redis.service";
-import StorageService from "./storage.service";
+import logger from "../../utils/logger";
+import * as metrics from "../../metrics";
+import RedisService from "../redis.service";
+import StorageService from "../storage.service";
 import puppeteer, { Browser } from "puppeteer";
+import { InvalidUrlException } from "./exceptions";
 
 class ScreenshotService {
   constructor(
@@ -85,7 +86,9 @@ class ScreenshotService {
 
     try {
       const page = await this.browser.newPage();
-      await page.goto(url);
+      const response = await page.goto(url);
+      if (!response.ok()) new InvalidUrlException(url);
+
       const image = await page.screenshot({ fullPage: true });
       page.close();
 
@@ -93,6 +96,11 @@ class ScreenshotService {
       return image;
     } catch (err) {
       metrics.urlScreenshots.inc({ failed: 1 });
+
+      if ((err as Error).message.includes("ERR_NAME_NOT_RESOLVED")) {
+        throw new InvalidUrlException(url);
+      }
+
       throw err;
     }
   }

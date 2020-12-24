@@ -1,5 +1,5 @@
 import { ContainerConfiguration } from "typescript-ioc";
-import ScreenshotService from "../services/screenshot.service";
+import ScreenshotService from "../services/screenshot/screenshot.service";
 import ScreenshotController from "../controllers/screenshot/screenshot.controller";
 
 const mapping: Array<ContainerConfiguration> = [
