@@ -1,24 +1,32 @@
 import logger from "../../utils/logger";
 import * as metrics from "../../metrics";
-import RedisService from "../redis.service";
-import StorageService from "../storage.service";
 import puppeteer, { Browser } from "puppeteer";
 import { InvalidUrlException } from "./exceptions";
+import { CacheService } from "../cache/cache.service";
+import { StorageService } from "../storage/storage.service";
 
 class ScreenshotService {
+  public static readonly cacheScreenshotPrefix = "valiu.screenshot-service.v1";
+
   constructor(
-    private redisService: RedisService,
+    private cacheService: CacheService,
     private storageService: StorageService
   ) {}
 
   private browser?: Browser;
+
+  public getBrowser(): Browser {
+    return this.browser;
+  }
 
   /**
    * Startup chromium browser instance.
    */
   public async setup() {
     if (!this.browser) {
-      this.browser = await puppeteer.launch();
+      this.browser = await puppeteer.launch({
+        defaultViewport: { width: 1024, height: 768 },
+      });
     }
   }
 
@@ -36,7 +44,15 @@ class ScreenshotService {
     return url
       .toLowerCase()
       .trim()
-      .replace(/^(https|https):\/\//i, "");
+      .replace(/^(http|https):\/\//i, "");
+  }
+
+  /**
+   * Get the Cache key for storing URL screenshot.
+   * @param url URL
+   */
+  private cacheKey(url: string) {
+    return `${ScreenshotService.cacheScreenshotPrefix}.${url.trim()}`;
   }
 
   /**
@@ -47,9 +63,10 @@ class ScreenshotService {
    */
   public async getOrScreenshot(url: string): Promise<string> {
     const basicUrl = this.cleanUrl(url);
+    const cacheKey = this.cacheKey(basicUrl);
 
     // Fetch from cache if exist.
-    const screenshotUrl = await this.redisService.getScreenshotUrl(basicUrl);
+    const screenshotUrl = await this.cacheService.get(cacheKey);
     if (screenshotUrl) {
       metrics.urlScreenshots.inc({ cached: 1 });
       logger.info(`Screenshot URL [${url}] found in cache as ${screenshotUrl}`);
@@ -69,7 +86,7 @@ class ScreenshotService {
     );
 
     // Cache Screenshot to URL.
-    await this.redisService.setScreenshotUrl(basicUrl, result.url);
+    await this.cacheService.set(cacheKey, result.url);
     logger.info(
       `Screenshot URL [${url}] with [${result.url}] saved to cache successfully.`
     );
@@ -86,9 +103,12 @@ class ScreenshotService {
 
     try {
       const page = await this.browser.newPage();
-      const response = await page.goto(url);
-      if (!response.ok()) new InvalidUrlException(url);
+      const response = await page.goto(url, {
+        waitUntil: "domcontentloaded",
+        timeout: 10000,
+      });
 
+      if (!response.ok()) throw new InvalidUrlException(url);
       const image = await page.screenshot({ fullPage: true });
       page.close();
 

@@ -1,9 +1,10 @@
 import { Binary } from "crypto";
 import { AppConfig } from "config";
 import { StorageMeta } from "storage-meta";
+import { StorageService } from "./storage.service";
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
 
-class StorageService {
+class CloudinaryService implements StorageService {
   constructor(config: AppConfig) {
     /* eslint-disable @typescript-eslint/camelcase*/
     cloudinary.config({
@@ -38,4 +39,4 @@ class StorageService {
   }
 }
 
-export default StorageService;
+export default CloudinaryService;

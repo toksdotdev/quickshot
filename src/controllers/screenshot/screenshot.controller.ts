@@ -23,9 +23,7 @@ class ScreenshotController {
       const imageUrl = await this.screenshotService.getOrScreenshot(uri);
       logger.info(`Screenshot for [${uri}] is [${imageUrl}]`);
 
-      return res
-        .json({ url: imageUrl, msg: "Screenshot successful." })
-        .status(201);
+      return res.json({ url: imageUrl, msg: "Screenshot successful." });
     } catch (err) {
       logger.error(`Screenshot for ${uri} failed with error: `, err);
 
@@ -35,7 +33,7 @@ class ScreenshotController {
         code = err.code;
       }
 
-      return res.json({ msg }).status(code);
+      return res.status(code).send({ msg });
     }
   }
 }

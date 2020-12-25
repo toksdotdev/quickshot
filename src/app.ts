@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import compression from "compression";
 
 import * as api from "./controllers";
+import * as metrics from "./metrics";
 
 
 // Express Server
@@ -13,6 +14,8 @@ app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Metrics (Peomtheus)
+metrics.exposeApi(app);
 
 // APIs
 api.configure(app);

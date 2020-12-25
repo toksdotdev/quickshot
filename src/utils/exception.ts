@@ -5,15 +5,9 @@ export class Exception extends Error {
     super(message);
 
     // Fix prototype
-    const proto = new.target.prototype;
-    const setPrototypeOf: Function = Object.setPrototypeOf;
-    setPrototypeOf
-      ? setPrototypeOf(this, proto)
-      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ((this as any).__proto__ = proto);
+    Object.setPrototypeOf(this, new.target.prototype);
 
     // Capture stack trace
-    const captureStackTrace: Function = Error.captureStackTrace;
-    captureStackTrace && captureStackTrace(this, this.constructor);
+    Error.captureStackTrace(this, this.constructor);
   }
 }

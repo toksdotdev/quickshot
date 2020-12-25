@@ -10,11 +10,7 @@ Container.configure(...ioc(config));
 
 // Imports
 import app from "./app";
-import * as metrics from "./metrics";
 import { shutdownGracefully } from "./utils/process";
-
-// Setup Metics (Peomtheus)
-metrics.exposeApi(app);
 
 // Error handling
 if (config.app.env === "development") {

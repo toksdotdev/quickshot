@@ -1,5 +1,5 @@
-import RedisService from "../services/redis.service";
-import StorageService from "../services/storage.service";
+import RedisService from "../services/cache/redis.service";
+import StorageService from "../services/storage/cloudinary.service";
 import ScreenshotService from "../services/screenshot/screenshot.service";
 import { Container, ContainerConfiguration, Scope } from "typescript-ioc";
 
