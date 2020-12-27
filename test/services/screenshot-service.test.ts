@@ -95,8 +95,10 @@ describe("Screenshot Service", () => {
 
     for (const url of invalidUrls) {
       const request = () => screenshotService.getOrScreenshot(url);
-      expect(request).rejects.toThrowError(InvalidUrlException).finally(done);
+      expect(request).rejects.toThrowError(InvalidUrlException);
     }
+
+    done();
   }, 10000);
 
   test("Should throw exception when browser closes abruptly.", async (done) => {
@@ -114,8 +116,8 @@ describe("Screenshot Service", () => {
       ]);
 
     await screenshotService.setup();
-    const expected = "Protocol error (Target.setAutoAttach): Target closed.";
-    expect(action).rejects.toThrowError(expected).finally(done);
+    expect(action).rejects.toThrowError();
+    done();
   }, 10000);
 
   test("Should have have consistence cache key.", async (done) => {
