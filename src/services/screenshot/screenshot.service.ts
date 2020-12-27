@@ -26,6 +26,14 @@ class ScreenshotService {
     if (!this.browser) {
       this.browser = await puppeteer.launch({
         defaultViewport: { width: 1024, height: 768 },
+        args: [
+          // Required for Docker version of Puppeteer
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          // This will write shared memory files into /tmp instead of /dev/shm,
+          // because Docker’s default for /dev/shm is 64MB
+          "--disable-dev-shm-usage",
+        ],
       });
     }
   }
@@ -110,7 +118,7 @@ class ScreenshotService {
 
       if (!response.ok()) throw new InvalidUrlException(url);
       const image = await page.screenshot({ fullPage: true });
-      page.close();
+      await page.close();
 
       metrics.urlScreenshots.inc({ success: 1 });
       return image;

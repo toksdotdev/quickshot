@@ -35,6 +35,11 @@ describe("Screenshot Service", () => {
     screenshotService = new ScreenshotService(cacheService, storageService);
   });
 
+  afterEach(async (done) => {
+    await screenshotService.shutdown();
+    done();
+  });
+
   test("Should initialize and destroy the browser instance in hazardous manner", async (done) => {
     await screenshotService.setup();
     expect(screenshotService.getBrowser()).not.toEqual(null);
@@ -101,7 +106,7 @@ describe("Screenshot Service", () => {
     const action = () =>
       Promise.all([
         screenshotService.screenshot(uncachedUrl),
-        
+
         // Sleep to simulate abrupt termination of browser
         sleep(100).then(
           async () => await screenshotService.getBrowser().close()

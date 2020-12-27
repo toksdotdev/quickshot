@@ -25,7 +25,7 @@ class ScreenshotController {
 
       return res.json({ url: imageUrl, msg: "Screenshot successful." });
     } catch (err) {
-      logger.error(`Screenshot for ${uri} failed with error: `, err);
+      logger.error(`Screenshot for ${uri} failed with error: ${JSON.stringify(err)}`);
 
       let [code, msg] = [500, "Internal server error"];
       if (err instanceof InvalidUrlException) {

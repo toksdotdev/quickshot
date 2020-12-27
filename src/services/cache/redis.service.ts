@@ -6,11 +6,7 @@ class RedisService implements CacheService {
   client: Redis;
 
   constructor(config: AppConfig) {
-    this.client = new RedisClient(
-      config.redis.port,
-      config.redis.host,
-      config.redis.options
-    );
+    this.client = new RedisClient(config.redis.connectionString);
   }
 
   /**

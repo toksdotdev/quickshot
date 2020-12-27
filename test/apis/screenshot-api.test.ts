@@ -53,6 +53,11 @@ describe("Screenshot APIs", () => {
     app = require("../../src/app").default;
   });
 
+  afterEach(async (done) => {
+    await Container.get(ScreenshotService).shutdown();
+    done();
+  });
+
   test("Should reject missing/invalid URL", async (done) => {
     const urls = [
       "/screenshot?url=x.notexists",

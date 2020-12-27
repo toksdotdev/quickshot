@@ -1,9 +1,16 @@
-const handleProcess = (
+import ScreenshotService from "../services/screenshot/screenshot.service";
+import { Container } from "typescript-ioc";
+
+const handleExit = (
   exit: boolean = true,
-  err: number | NodeJS.Signals | Error
+  err: number | NodeJS.Signals | Error |object
 ) => {
-  console.log(`Terminating with exit code: ${err}`);
-  if (exit) process.exit();
+  Container.get(ScreenshotService)
+    .shutdown()
+    .finally(() => {
+      console.log(`Terminating with exit code: ${err}`);
+      if (exit) process.exit();
+    });
 };
 
 /**
@@ -11,15 +18,11 @@ const handleProcess = (
  */
 
 export const shutdownGracefully = () => {
-  process.on("exit", (err) => handleProcess(true, err));
-
+  process.on("exit", (err) => handleExit(true, err));
   // Catch Ctrl+C event
-  process.on("SIGINT", (err) => handleProcess(true, err));
-
-  // Catch "kill pid" (for example: nodemon restart)
-  process.on("SIGUSR1", (err) => handleProcess(true, err));
-  process.on("SIGUSR2", (err) => handleProcess(true, err));
-
-  // Catches uncaught exceptions
-  process.on("uncaughtException", (err) => handleProcess(true, err));
+  process.on("SIGINT", (err) => handleExit(true, err));
+  process.on("SIGUSR1", (err) => handleExit(true, err));
+  process.on("SIGUSR2", (err) => handleExit(true, err));
+  process.on("uncaughtException", (err) => handleExit(true, err));
+  process.on("unhandledRejection", (err) => handleExit(true, err));
 };

@@ -1,0 +1,16 @@
+version: "3.2"
+services:
+  redis:
+    image: redis
+    container_name: cache
+    expose:
+      - 6379
+
+  app:
+    build: .
+    ports:
+      - 3000:3000
+    links:
+      - redis
+    env_file:
+      - .env.prod

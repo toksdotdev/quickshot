@@ -1,14 +1,10 @@
-import { RedisOptions } from "ioredis";
-
 export type AppConfig = {
   app: {
     env: string;
     port: number;
   };
   redis: {
-    port?: number;
-    host?: string;
-    options?: RedisOptions;
+    connectionString: string;
   };
   cloudinary: {
     apiKey: string;
