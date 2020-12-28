@@ -6,7 +6,6 @@ import compression from "compression";
 import * as api from "./controllers";
 import * as metrics from "./metrics";
 
-
 // Express Server
 const app = express();
 app.use(cors());

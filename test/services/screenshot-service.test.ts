@@ -16,7 +16,7 @@ describe("Screenshot Service", () => {
   const uncachedUrlKey = "valiu.screenshot-service.v1.captive.apple.com";
   const storedImageUrl = "https://cloudinary.com/d/uploaded-image.png";
 
-  beforeEach(() => {
+  beforeAll(() => {
     cacheService = {
       set: jest.fn(),
       get: jest
@@ -35,7 +35,7 @@ describe("Screenshot Service", () => {
     screenshotService = new ScreenshotService(cacheService, storageService);
   });
 
-  afterEach(async (done) => {
+  afterAll(async (done) => {
     await screenshotService.shutdown();
     done();
   });
@@ -94,8 +94,8 @@ describe("Screenshot Service", () => {
     ];
 
     for (const url of invalidUrls) {
-      const request = () => screenshotService.getOrScreenshot(url);
-      expect(request).rejects.toThrowError(InvalidUrlException);
+      const request = async () => await screenshotService.getOrScreenshot(url);
+      await expect(request).rejects.toThrow(InvalidUrlException);
     }
 
     done();
@@ -116,9 +116,9 @@ describe("Screenshot Service", () => {
       ]);
 
     await screenshotService.setup();
-    expect(action).rejects.toThrowError();
+    await expect(action).rejects.toThrowError();
     done();
-  }, 10000);
+  }, 20000);
 
   test("Should have have consistence cache key.", async (done) => {
     expect(ScreenshotService.cacheScreenshotPrefix).toEqual(

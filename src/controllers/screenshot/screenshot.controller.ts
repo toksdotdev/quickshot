@@ -1,11 +1,11 @@
+import { JOBS } from "../../jobs";
 import logger from "../../utils/logger";
 import { Request, Response } from "express";
-import { isUriValid } from "../../utils/validator";
-import { InvalidUrlException } from "../../services/screenshot/exceptions";
-import ScreenshotService from "../../services/screenshot/screenshot.service";
+import QueueService from "../../services/queue/queue.service";
+import { isEmailValid, isUriValid } from "../../utils/validator";
 
 class ScreenshotController {
-  constructor(private screenshotService: ScreenshotService) {}
+  constructor(private queueService: QueueService) {}
 
   /**
    * Screenshot URI specified.
@@ -13,27 +13,27 @@ class ScreenshotController {
    * @param res
    */
   public async screenshot(req: Request, res: Response) {
-    const uri = req.body.uri || req.query.uri;
+    const url = req.body.url || req.query.url;
+    const email = req.body.email || req.query.email;
 
-    if (!uri || !isUriValid(uri)) {
+    if (url == null || !isUriValid(url)) {
       return res.status(400).json({ msg: "Invalid/Missing URI." });
     }
 
+    if (email == null || !isEmailValid(email)) {
+      return res.status(400).json({ msg: "Invalid email specficied." });
+    }
+
     try {
-      const imageUrl = await this.screenshotService.getOrScreenshot(uri);
-      logger.info(`Screenshot for [${uri}] is [${imageUrl}]`);
+      this.queueService.add(JOBS.SCREENSHOT_AND_MAIL.name, { url, email });
+      logger.info(`${JOBS.SCREENSHOT_AND_MAIL.name} for [${url}] has been scheduled`);
 
-      return res.json({ url: imageUrl, msg: "Screenshot successful." });
+      return res.json({
+        msg: "We're cooking magic 🧙‍♀️. You'll get the link via mail shortly 😇.",
+      });
     } catch (err) {
-      logger.error(`Screenshot for ${uri} failed with error: ${JSON.stringify(err)}`);
-
-      let [code, msg] = [500, "Internal server error"];
-      if (err instanceof InvalidUrlException) {
-        msg = err.message;
-        code = err.code;
-      }
-
-      return res.status(code).send({ msg });
+      logger.error("Error occured while scheduling screenshot: ", err);
+      return res.status(500).json({ msg: "Internal server error." });
     }
   }
 }

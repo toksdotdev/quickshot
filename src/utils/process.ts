@@ -1,16 +1,16 @@
-import ScreenshotService from "../services/screenshot/screenshot.service";
 import { Container } from "typescript-ioc";
+import RedisQueueService from "../services/queue/redis-queue.service";
+import ScreenshotService from "../services/screenshot/screenshot.service";
 
-const handleExit = (
+const handleExit = async (
   exit: boolean = true,
-  err: number | NodeJS.Signals | Error |object
+  err: number | NodeJS.Signals | Error | object
 ) => {
-  Container.get(ScreenshotService)
-    .shutdown()
-    .finally(() => {
-      console.log(`Terminating with exit code: ${err}`);
-      if (exit) process.exit();
-    });
+  await Container.get(ScreenshotService).shutdown();
+  await Container.get(RedisQueueService).shutdown();
+  
+  console.log(`Terminating with exit code: ${err}`);
+  if (exit) process.exit();
 };
 
 /**

@@ -1,5 +1,5 @@
 export class Exception extends Error {
-  name = "INVALID_URL";
+  name: string;
 
   constructor(message?: string) {
     super(message);

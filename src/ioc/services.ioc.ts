@@ -1,5 +1,6 @@
 import RedisService from "../services/cache/redis.service";
 import StorageService from "../services/storage/cloudinary.service";
+import RedisQueueService from "../services/queue/redis-queue.service";
 import ScreenshotService from "../services/screenshot/screenshot.service";
 import { Container, ContainerConfiguration, Scope } from "typescript-ioc";
 
@@ -21,6 +22,11 @@ const mapping: Array<ContainerConfiguration> = [
         ctx.resolve(RedisService),
         ctx.resolve(StorageService)
       ),
+    scope: Scope.Singleton,
+  },
+  {
+    bind: RedisQueueService,
+    factory: () => new RedisQueueService(Container.getValue("config")),
     scope: Scope.Singleton,
   },
 ];

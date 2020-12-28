@@ -44,6 +44,7 @@ class ScreenshotService {
   public async shutdown() {
     if (this.browser) {
       await this.browser.close();
+      this.browser.process().kill();
       this.browser = null;
     }
   }
@@ -128,7 +129,7 @@ class ScreenshotService {
       if ((err as Error).message.includes("ERR_NAME_NOT_RESOLVED")) {
         throw new InvalidUrlException(url);
       }
-
+      
       throw err;
     }
   }

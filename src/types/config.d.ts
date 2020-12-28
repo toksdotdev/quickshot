@@ -1,12 +1,12 @@
 export type AppConfig = {
-  app: {
+  app?: {
     env: string;
     port: number;
   };
-  redis: {
+  redis?: {
     connectionString: string;
   };
-  cloudinary: {
+  cloudinary?: {
     apiKey: string;
     apiSecret: string;
     cloudName: string;
