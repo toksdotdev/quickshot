@@ -1,6 +1,6 @@
 import logger from "../../utils/logger";
 import { Request, Response } from "express";
-import QueueService from "../../services/queue/queue.service";
+import QueueService from "../../services/queue";
 import { isEmailValid, isUriValid } from "../../utils/validator";
 import ScreenshotAndMailJob from "../../jobs/screenshot-and-mail.job";
 

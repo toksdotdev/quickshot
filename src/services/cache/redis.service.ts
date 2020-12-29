@@ -1,6 +1,6 @@
+import { CacheService } from ".";
 import { AppConfig } from "config";
 import RedisClient, { Redis } from "ioredis";
-import { CacheService } from "./cache.service";
 
 class RedisService implements CacheService {
   client: Redis;

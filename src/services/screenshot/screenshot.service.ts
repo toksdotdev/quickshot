@@ -1,9 +1,9 @@
 import logger from "../../utils/logger";
+import { CacheService } from "../cache";
 import * as metrics from "../../metrics";
+import { StorageService } from "../storage";
 import puppeteer, { Browser } from "puppeteer";
 import { InvalidUrlException } from "./exceptions";
-import { CacheService } from "../cache/cache.service";
-import { StorageService } from "../storage/storage.service";
 
 class ScreenshotService {
   private browser?: Browser;

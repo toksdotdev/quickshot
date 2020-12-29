@@ -1,7 +1,7 @@
 import Redis from "ioredis";
+import QueueService from ".";
 import { AppConfig } from "config";
 import Queue, { QueueOptions } from "bull";
-import QueueService from "./queue.service";
 import { InvalidJobPath, UnknownJob } from "./exceptions";
 
 class RedisQueueService implements QueueService {
@@ -41,7 +41,6 @@ class RedisQueueService implements QueueService {
     const queue = new Queue(Job.key, this.connection);
 
     queue.process(Job.concurrency, async (job, done) => {
-
       try {
         done(null, await jobInstance.handle(job));
       } catch (err) {

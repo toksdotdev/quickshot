@@ -1,4 +1,4 @@
-import QueueService from "../services/queue/queue.service";
+import QueueService from "../services/queue";
 
 /**
  * Alias for resolving job file path

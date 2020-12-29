@@ -1,7 +1,7 @@
 import { Binary } from "crypto";
 import { AppConfig } from "config";
+import { StorageService } from ".";
 import { StorageMeta } from "storage-meta";
-import { StorageService } from "./storage.service";
 import { UploadApiResponse, v2 as cloudinary } from "cloudinary";
 
 class CloudinaryService implements StorageService {

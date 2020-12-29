@@ -13,7 +13,6 @@ describe("Job", () => {
     // Mock jobs
     jobDirectory = resolve(__dirname, "../../src/jobs");
     for (const job of Object.values(jobs)) {
-      console.log(resolve(jobDirectory, job));
       jest.mock(resolve(jobDirectory, job), () => ({ default: () => {} }));
     }
   });
