@@ -19,22 +19,31 @@ describe("Redis Queue Service", () => {
   });
 
   test("Should schedule job in queue", async (done) => {
-    await queueService.register("dummy-job", `${jobDirectory}/dummyjob`);
+    await queueService.register(`${jobDirectory}/dummy-job`);
     await queueService.add("dummy-job", { uri: "https://google.com" });
     expect(queueService.getQueues().get("dummy-job")).not.toEqual(null);
     done();
   });
 
   test("Should schedule job ending with .js in queue", async (done) => {
-    await queueService.register("dummy-job", `${jobDirectory}/dummyjob-js`);
-    await queueService.add("dummy-job", { uri: "https://google.com" });
+    await queueService.register(`${jobDirectory}/dummy-job-js`);
+    await queueService.add("dummy-job-js", { uri: "https://google.com" });
     expect(queueService.getQueues().get("dummy-job")).not.toEqual(null);
+    done();
+  });
+
+  test("Should handle exception for error prone job", async (done) => {
+    await queueService.register(`${jobDirectory}/dummy-error-job`);
+    const action = () =>
+      queueService.add("dummy-error-job", { uri: "https://google.com" });
+
+    await expect(action).rejects.toThrowError("Something went wrong");
     done();
   });
 
   test("Should not schedule invalid job", async (done) => {
     await expect(
-      queueService.register("invalid-job", `${jobDirectory}/invalid.ts`)
+      queueService.register(`${jobDirectory}/invalid.ts`)
     ).rejects.toThrow(InvalidJobPath);
     done();
   });
@@ -48,11 +57,11 @@ describe("Redis Queue Service", () => {
   });
 
   test("Should shutdown & destory all queues", async (done) => {
-    await queueService.register("dummy-job-1", `${jobDirectory}/dummyjob`);
-    await queueService.add("dummy-job-1", { uri: "https://google.com" });
+    await queueService.register(`${jobDirectory}/dummy-job`);
+    await queueService.add("dummy-job", { uri: "https://google.com" });
 
-    await queueService.register("dummy-job-2", `${jobDirectory}/dummyjob`);
-    await queueService.add("dummy-job-2", { uri: "https://google.com" });
+    await queueService.register(`${jobDirectory}/dummy-job`);
+    await queueService.add("dummy-job", { uri: "https://google.com" });
     await queueService.shutdown();
 
     expect(queueService.getQueues().size).toEqual(0);

@@ -10,20 +10,30 @@ const domains = fs
 console.log("Starting load testing now");
 
 const options: loadtest.LoadTestOptions = {
-  method: "GET",
+  method: "POST",
   url: "http://localhost:3000/screenshot",
-  maxSeconds: 120,
+  contentType: "application/json",
+  body: {},
   concurrency: 1000,
-  maxRequests: 10000,
   requestsPerSecond: 1000,
   requestGenerator: (params, options, client, callback) => {
-    const param = `?uri=https://${
+    const url = `https://${
       domains[Math.trunc(Math.random() * domains.length)]
     }`;
-    options.href = `${options.href}${param}`;
-    options.pathname = `${options.pathname}${param}`;
-    options.path = `${options.path}${param}`;
-    return client(options, callback);
+    const email = "toks@toks.com";
+
+    options.headers["Content-Type"] = "application/json";
+
+    // options.href = `${options.href}${param}`;
+    // options.pathname = `${options.pathname}${param}`;
+    // options.path = `${options.path}${param}`;
+    options.body = { email, url };
+    const s = JSON.stringify(options.body);
+    options.headers["Content-Length"] = s.length;
+    console.log(options);
+    const a = client(options, callback);
+    a.write(s);
+    return a;
   },
 };
 

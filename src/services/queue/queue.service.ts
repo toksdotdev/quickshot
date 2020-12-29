@@ -5,7 +5,7 @@ interface QueueService {
    * @param jobPath File path of job to execute
    * @param concurrency How many parralel workers should be used to handle job.
    */
-  register(name: string, jobPath: string, concurrency?: number): Promise<void>;
+  register(jobPath: string): Promise<void>;
 
   /**
    * Creates a new job and adds it to the queue.

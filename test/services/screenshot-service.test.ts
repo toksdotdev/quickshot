@@ -1,3 +1,8 @@
+import {
+  mockCacheService,
+  mockStorageService,
+  mockScreenshotService,
+} from "../common/services";
 import { CacheService } from "../../src/services/cache/cache.service";
 import { StorageService } from "../../src/services/storage/storage.service";
 import { InvalidUrlException } from "../../src/services/screenshot/exceptions";
@@ -16,26 +21,19 @@ describe("Screenshot Service", () => {
   const uncachedUrlKey = "valiu.screenshot-service.v1.captive.apple.com";
   const storedImageUrl = "https://cloudinary.com/d/uploaded-image.png";
 
-  beforeAll(() => {
-    cacheService = {
-      set: jest.fn(),
-      get: jest
-        .fn()
-        .mockImplementation((key: string) =>
-          key === cachedUrlKey ? cachedUrlImageUrl : null
-        ),
-    };
+  beforeEach(() => {
+    cacheService = mockCacheService({
+      getImpl: (key: string) =>
+        key === cachedUrlKey ? cachedUrlImageUrl : null,
+    });
 
-    storageService = {
-      upload: jest.fn().mockReturnValue({
-        url: storedImageUrl,
-      }),
-    };
-
-    screenshotService = new ScreenshotService(cacheService, storageService);
+    storageService = mockStorageService({
+      uploadResponse: { url: storedImageUrl },
+    });
+    screenshotService = mockScreenshotService({ cacheService, storageService });
   });
 
-  afterAll(async (done) => {
+  afterEach(async (done) => {
     await screenshotService.shutdown();
     done();
   });
@@ -100,25 +98,6 @@ describe("Screenshot Service", () => {
 
     done();
   }, 10000);
-
-  test("Should throw exception when browser closes abruptly.", async (done) => {
-    const sleep = (ms: number) =>
-      new Promise((resolve) => setTimeout(resolve, ms));
-
-    const action = () =>
-      Promise.all([
-        screenshotService.screenshot(uncachedUrl),
-
-        // Sleep to simulate abrupt termination of browser
-        sleep(100).then(
-          async () => await screenshotService.getBrowser().close()
-        ),
-      ]);
-
-    await screenshotService.setup();
-    await expect(action).rejects.toThrowError();
-    done();
-  }, 20000);
 
   test("Should have have consistence cache key.", async (done) => {
     expect(ScreenshotService.cacheScreenshotPrefix).toEqual(

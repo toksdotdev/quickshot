@@ -1,9 +1,10 @@
 import Redis from "ioredis";
 import { AppConfig } from "config";
 import Queue, { QueueOptions } from "bull";
+import QueueService from "./queue.service";
 import { InvalidJobPath, UnknownJob } from "./exceptions";
 
-class RedisQueueService implements RedisQueueService {
+class RedisQueueService implements QueueService {
   private readonly queues: Map<string, Queue.Queue> = new Map();
 
   private readonly connection: QueueOptions;
@@ -13,10 +14,10 @@ class RedisQueueService implements RedisQueueService {
    */
   constructor(config: AppConfig) {
     const subscriber = new Redis(config.redis.connectionString);
-    const publisher = new Redis(config.redis.connectionString);
+    const client = new Redis(config.redis.connectionString);
 
     this.connection = {
-      createClient: (type) => (type === "subscriber" ? subscriber : publisher),
+      createClient: (type) => (type === "subscriber" ? subscriber : client),
     };
   }
 
@@ -24,16 +25,31 @@ class RedisQueueService implements RedisQueueService {
     return this.queues;
   }
 
-  async register(name: string, jobPath: string, concurrency: number = 3) {
+  async register(jobPath: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let Job: any;
+
     try {
       jobPath = require.resolve(jobPath);
+      Job = await import(jobPath);
+      Job = Job.default || Job;
     } catch (err) {
       throw new InvalidJobPath(jobPath);
     }
 
-    const queue = new Queue(name, this.connection);
-    queue.process(concurrency, jobPath); // Process without waiting
-    this.queues.set(name, queue);
+    const jobInstance = new Job();
+    const queue = new Queue(Job.key, this.connection);
+
+    queue.process(Job.concurrency, async (job, done) => {
+
+      try {
+        done(null, await jobInstance.handle(job));
+      } catch (err) {
+        done(err);
+      }
+    });
+
+    this.queues.set(Job.key, queue);
   }
 
   /**

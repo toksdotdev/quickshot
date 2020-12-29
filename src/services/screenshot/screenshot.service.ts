@@ -6,14 +6,14 @@ import { CacheService } from "../cache/cache.service";
 import { StorageService } from "../storage/storage.service";
 
 class ScreenshotService {
+  private browser?: Browser;
+
   public static readonly cacheScreenshotPrefix = "valiu.screenshot-service.v1";
 
   constructor(
     private cacheService: CacheService,
     private storageService: StorageService
   ) {}
-
-  private browser?: Browser;
 
   public getBrowser(): Browser {
     return this.browser;
@@ -113,7 +113,6 @@ class ScreenshotService {
     try {
       const page = await this.browser.newPage();
       const response = await page.goto(url, {
-        waitUntil: "domcontentloaded",
         timeout: 10000,
       });
 
@@ -129,7 +128,7 @@ class ScreenshotService {
       if ((err as Error).message.includes("ERR_NAME_NOT_RESOLVED")) {
         throw new InvalidUrlException(url);
       }
-      
+
       throw err;
     }
   }

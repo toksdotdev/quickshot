@@ -1,8 +1,11 @@
 import request from "supertest";
 import { Express } from "express";
-import { JOBS } from "../../src/jobs";
 import { Container } from "typescript-ioc";
+import { mockFn } from "../common/mocking";
+import { initializeIocAndApp } from "../common/ioc";
+import { mockQueueService } from "../common/services";
 import QueueService from "../../src/services/queue/queue.service";
+import ScreenshotAndMailJob from "../../src/jobs/screenshot-and-mail.job";
 import ScreenshotService from "../../src/services/screenshot/screenshot.service";
 import ScreenshotController from "../../src/controllers/screenshot/screenshot.controller";
 
@@ -14,22 +17,13 @@ describe("Screenshot APIs", () => {
   const email = "toks@gmail.com";
 
   beforeAll(() => {
-    queueService = {
-      add: jest.fn(),
-      register: jest.fn(),
-    };
-
-    // Initialize IOC before loading app instance
-    Container.configure(
-      ...[
-        {
-          bind: ScreenshotController,
-          factory: () => new ScreenshotController(queueService),
-        },
-      ]
-    );
-
-    app = require("../../src/app").default;
+    queueService = mockQueueService();
+    app = initializeIocAndApp([
+      {
+        bind: ScreenshotController,
+        factory: () => new ScreenshotController(queueService),
+      },
+    ]);
   });
 
   afterAll(async (done) => {
@@ -38,14 +32,13 @@ describe("Screenshot APIs", () => {
   });
 
   test("Should reject missing/invalid URL", async (done) => {
-    const urls = [
-      "/screenshot?url=x.notexists",
-      "/screenshot?url=",
-      "/screenshot",
-    ];
+    const payloads = [{ url: "x.notexists" }, { url: null }, {}];
 
-    for (const url of urls) {
-      const response = await request(app).get(url).expect(400);
+    for (const payload of payloads) {
+      const response = await request(app)
+        .post("/screenshot")
+        .send(payload)
+        .expect(400);
       expect(response.body.msg).toEqual("Invalid/Missing URI.");
     }
 
@@ -53,14 +46,26 @@ describe("Screenshot APIs", () => {
   });
 
   test("Should reject missing/invalid email", async (done) => {
-    const urls = [
-      "/screenshot?url=https://google.com&email=sam",
-      "/screenshot?url=https://google.com&email=",
-      "/screenshot?url=https://google.com&email",
+    const payloads = [
+      {
+        url: "https://google.com",
+        email: "sam",
+      },
+      {
+        url: "https://google.com",
+        email: "",
+      },
+      {
+        url: "https://google.com",
+        email: null,
+      },
     ];
 
-    for (const url of urls) {
-      const response = await request(app).get(url).expect(400);
+    for (const payload of payloads) {
+      const response = await request(app)
+        .post("/screenshot")
+        .send(payload)
+        .expect(400);
       expect(response.body.msg).toEqual("Invalid email specficied.");
     }
 
@@ -68,9 +73,9 @@ describe("Screenshot APIs", () => {
   });
 
   test("Should reject local file URI.", async (done) => {
-    const localFileUri = "file:///users/valiu/documents/web/sample.html";
     const response = await request(app)
-      .get(`/screenshot?url=${localFileUri}&email=${email}`)
+      .post("/screenshot")
+      .send({ url: "file:///users/valiu/documents/web/sample.html", email })
       .expect(400);
 
     expect(response.body.msg).toEqual("Invalid/Missing URI.");
@@ -78,25 +83,20 @@ describe("Screenshot APIs", () => {
   });
 
   test("Should schedule screenshot job in queue", async (done) => {
-    await request(app).get(`/screenshot?url=${url}&email=${email}`).expect(200);
-
-    expect(queueService.add).toBeCalledWith(JOBS.SCREENSHOT_AND_MAIL.name, {
-      url,
-      email,
-    });
-
+    const payload = { url, email };
+    await request(app).post("/screenshot").send(payload).expect(200);
+    expect(queueService.add).toBeCalledWith(ScreenshotAndMailJob.key, payload);
     done();
   });
 
   test("Should throw exception if job fails to schedule", async (done) => {
-    (queueService.add as jest.MockedFunction<
-      typeof queueService.add
-    >).mockImplementation(() => {
+    mockFn(queueService.add).mockImplementation(() => {
       throw new Error("Failed to schedule job");
     });
 
     const response = await request(app)
-      .get(`/screenshot?url=${url}&email=tochukwu@gmail.com`)
+      .post("/screenshot")
+      .send({ url, email })
       .expect(500);
 
     expect(response.body.msg).toEqual("Internal server error.");

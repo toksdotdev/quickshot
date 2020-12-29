@@ -1,5 +1,6 @@
 import { resolve } from "path";
-import { JOBS, registerJobs } from "../../src/jobs";
+import jobs from "../../src/jobs";
+import { registerJobs } from "../../src/utils/jobs";
 import RedisQueueService from "../../src/services/queue/redis-queue.service";
 
 describe("Job", () => {
@@ -11,10 +12,9 @@ describe("Job", () => {
 
     // Mock jobs
     jobDirectory = resolve(__dirname, "../../src/jobs");
-
-    for (const job of Object.values(JOBS)) {
-      console.log(resolve(jobDirectory, job.path));
-      jest.mock(resolve(jobDirectory, job.path), () => ({ default: () => {} }));
+    for (const job of Object.values(jobs)) {
+      console.log(resolve(jobDirectory, job));
+      jest.mock(resolve(jobDirectory, job), () => ({ default: () => {} }));
     }
   });
 
@@ -25,11 +25,11 @@ describe("Job", () => {
 
   test("Should register jobs into queue", async (done) => {
     queueService.register = jest.fn();
-    await registerJobs(jobDirectory, queueService);
+    await registerJobs(jobDirectory, jobs, queueService);
     expect(queueService.register).toHaveBeenCalled();
 
-    for (const job of Object.values(JOBS)) {
-      expect(queueService.getQueues().get(job.name)).not.toEqual(null);
+    for (const job of Object.values(jobs)) {
+      expect(queueService.getQueues().get(job)).not.toEqual(null);
     }
 
     done();

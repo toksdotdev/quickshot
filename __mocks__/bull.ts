@@ -1,3 +1,5 @@
+import { UnknownJob } from "../src/services/queue/exceptions";
+
 export default class Queue {
   name: string;
   processFn: Function = () => {};
@@ -6,13 +8,16 @@ export default class Queue {
     this.name = name;
   }
 
-  process = (concurrency: number, file: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const md = require(require.resolve(file));
-    this.processFn = md.default || md;
+  process = async (concurrency: number, callback: Function) => {
+    this.processFn = callback;
   };
 
   add = (data: object): Promise<object> => {
-    return this.processFn({ data });
+    return new Promise((resolve, reject) => {
+      this.processFn(data, (err: object, res: object) => {
+        if (err) return reject(err);
+        resolve(res);
+      });
+    });
   };
 }

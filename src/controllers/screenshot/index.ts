@@ -5,6 +5,6 @@ import ScreenshotController from "./screenshot.controller";
 const screenshot = express.Router();
 const controller = Container.get(ScreenshotController);
 
-screenshot.get("/screenshot", controller.screenshot.bind(controller));
+screenshot.post("/screenshot", controller.screenshot.bind(controller));
 
 export default screenshot;

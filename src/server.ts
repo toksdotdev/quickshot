@@ -10,10 +10,11 @@ configureIoc(config);
 
 // Imports
 import app from "./app";
-import { registerJobs } from "./jobs";
+import jobs from "./jobs";
+import { resolve } from "path";
+import { registerJobs } from "./utils/jobs";
 import { shutdownGracefully } from "./utils/process";
 import RedisQueueService from "./services/queue/redis-queue.service";
-import { resolve } from "path";
 
 // Error handling
 if (config.app.env === "development") {
@@ -21,7 +22,11 @@ if (config.app.env === "development") {
 }
 
 // Register Queue Job
-registerJobs(resolve(__dirname, "jobs"), Container.get(RedisQueueService));
+registerJobs(
+  resolve(__dirname, "jobs"),
+  jobs,
+  Container.get(RedisQueueService)
+);
 
 // App Serve
 app.listen(config.app.port, () =>

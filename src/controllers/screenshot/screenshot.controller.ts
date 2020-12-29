@@ -1,8 +1,8 @@
-import { JOBS } from "../../jobs";
 import logger from "../../utils/logger";
 import { Request, Response } from "express";
 import QueueService from "../../services/queue/queue.service";
 import { isEmailValid, isUriValid } from "../../utils/validator";
+import ScreenshotAndMailJob from "../../jobs/screenshot-and-mail.job";
 
 class ScreenshotController {
   constructor(private queueService: QueueService) {}
@@ -13,8 +13,8 @@ class ScreenshotController {
    * @param res
    */
   public async screenshot(req: Request, res: Response) {
-    const url = req.body.url || req.query.url;
-    const email = req.body.email || req.query.email;
+    const url = req.body.url;
+    const email = req.body.email;
 
     if (url == null || !isUriValid(url)) {
       return res.status(400).json({ msg: "Invalid/Missing URI." });
@@ -25,8 +25,10 @@ class ScreenshotController {
     }
 
     try {
-      this.queueService.add(JOBS.SCREENSHOT_AND_MAIL.name, { url, email });
-      logger.info(`${JOBS.SCREENSHOT_AND_MAIL.name} for [${url}] has been scheduled`);
+      this.queueService.add(ScreenshotAndMailJob.key, { url, email });
+      logger.info(
+        `${ScreenshotAndMailJob.key} for [${url}] has been scheduled`
+      );
 
       return res.json({
         msg: "We're cooking magic 🧙‍♀️. You'll get the link via mail shortly 😇.",

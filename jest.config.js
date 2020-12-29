@@ -9,5 +9,9 @@ module.exports = {
     "^.+\\.(ts|tsx)$": "ts-jest",
   },
   testMatch: ["**/test/**/*.test.(ts|js)"],
+  coveragePathIgnorePatterns: [
+    "test/data",
+    "test/common",
+  ],
   testEnvironment: "node",
 };
