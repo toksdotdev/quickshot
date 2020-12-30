@@ -1,10 +1,10 @@
 import request from "supertest";
 import { Express } from "express";
 import { Container } from "typescript-ioc";
-import { mockFn } from "../common/mocking";
+import { mockFn } from "../common/mocks/helpers";
 import QueueService from "../../src/services/queue";
-import { initializeIocAndApp } from "../common/ioc";
-import { mockQueueService } from "../common/services";
+import { initializeIocAndApp } from "../common/mocks/ioc";
+import { mockQueueService } from "../common/mocks/services";
 import ScreenshotAndMailJob from "../../src/jobs/screenshot-and-mail.job";
 import ScreenshotService from "../../src/services/screenshot/screenshot.service";
 import ScreenshotController from "../../src/controllers/screenshot/screenshot.controller";

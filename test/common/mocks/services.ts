@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AppConfig } from "../../src/types/config";
-import { CacheService } from "../../src/services/cache";
-import { StorageService } from "../../src/services/storage";
-import ScreenshotService from "../../src/services/screenshot/screenshot.service";
-import MailService from "../../src/services/mail.service";
+import { AppConfig } from "../../../src/types/config";
+import { CacheService } from "../../../src/services/cache";
+import { StorageService } from "../../../src/services/storage";
+import ScreenshotService from "../../../src/services/screenshot/screenshot.service";
+import MailService from "../../../src/services/mail.service";
 
 export const mockQueueService = () => ({
   add: jest.fn(),

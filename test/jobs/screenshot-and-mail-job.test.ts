@@ -3,11 +3,11 @@ import {
   mockMailService,
   mockScreenshotService,
   mockStorageService,
-} from "../common/services";
+} from "../common/mocks/services";
 import { Job } from "bull";
 import { Container } from "typescript-ioc";
-import { initializeIocAndApp } from "../common/ioc";
 import { CacheService } from "../../src/services/cache";
+import { initializeIocAndApp } from "../common/mocks/ioc";
 import MailService from "../../src/services/mail.service";
 import { StorageService } from "../../src/services/storage";
 import ScreenshotAndMailJob from "../../src/jobs/screenshot-and-mail.job";

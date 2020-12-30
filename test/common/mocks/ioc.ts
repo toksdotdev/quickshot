@@ -11,5 +11,5 @@ export const initializeIocAndApp = (
   >
 ) => {
   Container.configure(...config);
-  return require("../../src/app").default;
+  return require("../../../src/app").default;
 };

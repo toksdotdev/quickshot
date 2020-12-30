@@ -1,10 +1,10 @@
 {
-  "name": "typescript-express-ioc",
-  "version": "0.1.0",
-  "description": "A starting point for Node.js express apps with TypeScript",
+  "name": "screenshot-service",
+  "version": "1.0.0",
+  "description": "Screeshot URL via Rest API and get it delivered via mail",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tnkemdilim/typescript-express-ioc"
+    "url": "https://github.com/tnkemdilim/screenshot-service"
   },
   "author": "Tochukwu Nkemdilim",
   "license": "MIT",

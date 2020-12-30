@@ -2,7 +2,7 @@ import {
   mockCacheService,
   mockStorageService,
   mockScreenshotService,
-} from "../common/services";
+} from "../common/mocks/services";
 import { CacheService } from "../../src/services/cache";
 import { StorageService } from "../../src/services/storage";
 import { InvalidUrlException } from "../../src/services/screenshot/exceptions";

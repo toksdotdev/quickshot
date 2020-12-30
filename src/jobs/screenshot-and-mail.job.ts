@@ -106,7 +106,7 @@ class ScreenshotAndMailJob {
    */
   async handleError(job: Job<Data>, err: any): Promise<{ msg: string }> {
     if (err instanceof InvalidUrlException) {
-      logger.info(`Sending invalid url mail to ${job.data.email}`);
+      logger.info(`Sending invalid url mail to [${job.data.email}]`);
 
       await this.mailScreenshotResult(
         "invalidUrl",
