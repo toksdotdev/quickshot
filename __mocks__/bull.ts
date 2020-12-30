@@ -1,5 +1,3 @@
-import { UnknownJob } from "../src/services/queue/exceptions";
-
 export default class Queue {
   name: string;
   processFn: Function = () => {};

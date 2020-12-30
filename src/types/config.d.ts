@@ -1,3 +1,5 @@
+type MailDriver = "smtp";
+
 export type AppConfig = {
   app?: {
     env: string;
@@ -10,5 +12,18 @@ export type AppConfig = {
     apiKey: string;
     apiSecret: string;
     cloudName: string;
+  };
+  mail?: {
+    from: string;
+    default: MailDriver;
+    smtp: {
+      host: string;
+      port: number;
+      secure: boolean;
+      auth: {
+        user: string;
+        pass: string;
+      };
+    };
   };
 };

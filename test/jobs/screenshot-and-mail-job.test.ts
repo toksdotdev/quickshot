@@ -1,27 +1,32 @@
+import {
+  mockCacheService,
+  mockMailService,
+  mockScreenshotService,
+  mockStorageService,
+} from "../common/services";
 import { Job } from "bull";
 import { Container } from "typescript-ioc";
 import { initializeIocAndApp } from "../common/ioc";
 import { CacheService } from "../../src/services/cache";
+import MailService from "../../src/services/mail.service";
 import { StorageService } from "../../src/services/storage";
 import ScreenshotAndMailJob from "../../src/jobs/screenshot-and-mail.job";
 import ScreenshotService from "../../src/services/screenshot/screenshot.service";
-import {
-  mockCacheService,
-  mockScreenshotService,
-  mockStorageService,
-} from "../common/services";
 
 describe("Job: Screenshot and Mail", () => {
-  const url = "http://x.com";
+  const cachedUrl = "http://x.com";
   const email = "toks@gmail.com";
-  let cacheService: CacheService;
-  let storageService: StorageService;
-  let screenshotService: ScreenshotService;
   const cachedUrlKey = "valiu.screenshot-service.v1.x.com";
   const cachedUrlImageUrl = "https://cloudinary.com/d/x.com.png";
   const storedImageUrl = "https://cloudinary.com/d/uploaded-image.png";
 
+  let mailService: MailService;
+  let cacheService: CacheService;
+  let storageService: StorageService;
+  let screenshotService: ScreenshotService;
+
   beforeEach(() => {
+    mailService = mockMailService({ sendImpl: () => {} });
     cacheService = mockCacheService({
       getImpl: (key: string) =>
         key === cachedUrlKey ? cachedUrlImageUrl : null,
@@ -34,6 +39,10 @@ describe("Job: Screenshot and Mail", () => {
     screenshotService = mockScreenshotService({ cacheService, storageService });
 
     initializeIocAndApp([
+      {
+        bind: MailService,
+        factory: () => mailService,
+      },
       {
         bind: ScreenshotService,
         factory: () => screenshotService,
@@ -55,7 +64,7 @@ describe("Job: Screenshot and Mail", () => {
     const job = new ScreenshotAndMailJob();
     screenshotService.getOrScreenshot = jest.fn();
 
-    await job.handle({ data: { email, url } } as Job<{
+    await job.handle({ data: { email, url: cachedUrl } } as Job<{
       email: string;
       url: string;
     }>);
@@ -64,23 +73,42 @@ describe("Job: Screenshot and Mail", () => {
     done();
   });
 
-  test("Should send mail when URL is InvalidUrlException", async (done) => {
-    const invalidUrls = [
-      "http://google.com.ng/lofin",
-      "https://thislinkdoesntwork.people",
-    ];
+  test("Should send success mail when URL is valid", async (done) => {
+    const job = new ScreenshotAndMailJob();
+    const response = await job.handle({
+      data: { email, url: cachedUrl },
+    } as Job<{ email: string; url: string }>);
 
-    for (const invalidUrl of invalidUrls) {
-      const job = new ScreenshotAndMailJob();
+    expect(response).toEqual({ msg: "Screenshot sent successfully." });
+    expect(mailService.send).toHaveBeenCalledTimes(1);
+    expect(mailService.send).toBeCalledWith(
+      expect.objectContaining({
+        html: expect.stringContaining(cachedUrl),
+        subject: "Screenshot Successfull",
+        to: email,
+      })
+    );
 
-      const response = await job.handle({
-        data: { email, url: invalidUrl },
-      } as Job<{ email: string; url: string }>);
+    done();
+  });
 
-      expect(response).toEqual({
-        msg: "Invalid URL Email sent",
-      });
-    }
+  test("Should invalid URL mail", async (done) => {
+    const invalidUrl = "https://thislinkdoesntwork.people";
+    const job = new ScreenshotAndMailJob();
+
+    const response = await job.handle({
+      data: { email, url: invalidUrl },
+    } as Job<{ email: string; url: string }>);
+
+    expect(response).toEqual({ msg: "Invalid URL Email sent" });
+    expect(mailService.send).toHaveBeenCalledTimes(1);
+    expect(mailService.send).toHaveBeenCalledWith(
+      expect.objectContaining({
+        html: expect.stringContaining(invalidUrl),
+        subject: "Screenshot Failed",
+        to: email,
+      })
+    );
 
     done();
   });

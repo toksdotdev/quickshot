@@ -3,8 +3,8 @@ import {
   mockStorageService,
   mockScreenshotService,
 } from "../common/services";
-import { CacheService } from "../../src/services/cache/cache.service";
-import { StorageService } from "../../src/services/storage/storage.service";
+import { CacheService } from "../../src/services/cache";
+import { StorageService } from "../../src/services/storage";
 import { InvalidUrlException } from "../../src/services/screenshot/exceptions";
 import ScreenshotService from "../../src/services/screenshot/screenshot.service";
 

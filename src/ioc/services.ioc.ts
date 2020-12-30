@@ -1,3 +1,4 @@
+import MailService from "../services/mail.service";
 import RedisService from "../services/cache/redis.service";
 import StorageService from "../services/storage/cloudinary.service";
 import RedisQueueService from "../services/queue/redis-queue.service";
@@ -27,6 +28,11 @@ const mapping: Array<ContainerConfiguration> = [
   {
     bind: RedisQueueService,
     factory: () => new RedisQueueService(Container.getValue("config")),
+    scope: Scope.Singleton,
+  },
+  {
+    bind: MailService,
+    factory: () => new MailService(Container.getValue("config")),
     scope: Scope.Singleton,
   },
 ];

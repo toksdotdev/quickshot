@@ -1,20 +1,18 @@
-import { CacheService } from "../../src/services/cache/cache.service";
-import { StorageService } from "../../src/services/storage/storage.service";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { AppConfig } from "../../src/types/config";
+import { CacheService } from "../../src/services/cache";
+import { StorageService } from "../../src/services/storage";
 import ScreenshotService from "../../src/services/screenshot/screenshot.service";
+import MailService from "../../src/services/mail.service";
 
 export const mockQueueService = () => ({
   add: jest.fn(),
   register: jest.fn(),
 });
 
-export const mockCacheService = (a: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setImpl?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getImpl?: any;
-}) => ({
-  set: jest.fn().mockImplementation(a.setImpl),
-  get: jest.fn().mockImplementation(a.getImpl),
+export const mockCacheService = (opts: { setImpl?: any; getImpl?: any }) => ({
+  set: jest.fn().mockImplementation(opts.setImpl),
+  get: jest.fn().mockImplementation(opts.getImpl),
 });
 
 export const mockStorageService = ({ uploadResponse = null }) =>
@@ -26,3 +24,25 @@ export const mockScreenshotService = ({
   cacheService = mockCacheService({}) as CacheService,
   storageService = mockStorageService({}) as StorageService,
 }) => new ScreenshotService(cacheService, storageService);
+
+export const mockMailService = (opts: { sendImpl?: any }) => {
+  const config: AppConfig = {
+    mail: {
+      default: "smtp",
+      from: "from@toks.com",
+      smtp: {
+        auth: { pass: "", user: "" },
+        host: "",
+        port: 587,
+        secure: false,
+      },
+    },
+  };
+
+  const mailService = new MailService(config);
+  if (opts.sendImpl) {
+    mailService.send = jest.fn().mockImplementation(opts.sendImpl);
+  }
+
+  return mailService;
+};
