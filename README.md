@@ -1,7 +1,6 @@
 # Quickshot
 
 [![Build Status](https://travis-ci.com/TNkemdilim/quickshot.svg?token=iPj2zpjbHethzECCzCa7&branch=main)](https://travis-ci.com/TNkemdilim/quickshot)
-
 [![Coverage Status](https://coveralls.io/repos/github/TNkemdilim/quickshot/badge.svg?t=XZJcUa)](https://coveralls.io/github/TNkemdilim/quickshot)
 
 A dead-simple service that screenshots webpages via REST API, and sends the links to your email.
@@ -84,10 +83,6 @@ Get scraped prometheus metrics. Currently supported metrics incudes:
 
 # Architecture
 
-## Overview
-
-## Design pattern
-
 This service heavily relies on dependency injection, and all IOC declarations can be found [here](./src/ioc). To register:
 
 - **Services:** see [`services.ioc.ts`](./src/ioc/services.ioc.ts)
@@ -140,9 +135,6 @@ Here are the machine specs for the sample load testing shown below:
 - 2.8 GHz Intel Core i7
 - 16 GB 2133 MHz LPDDR3
 
-### Report
-
-
-# Contributing
+## Contributing
 
 If you see any way to improve this service, please kindly open a PR.
