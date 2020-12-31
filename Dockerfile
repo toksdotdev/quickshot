@@ -4,7 +4,7 @@ RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
 COPY package*.json ./
 # Don't install option package `puppeteer` (since it's already in the docker image)
-RUN npm i --no-optional
+RUN NPM_POST_INSTALL=0 npm i --no-optional
 COPY . .
 RUN npm run build
 

@@ -11,7 +11,7 @@
   "scripts": {
     "lint": "eslint \"**/*.{js,ts}\" --quiet --fix",
     "build": "tsc && npm run lint",
-    "postinstall": "npm run build",
+    "postinstall": "if [[ ${NPM_POST_INSTALL} != \"0\" ]]; then npm run build; fi",
     "start": "node dist/server.js",
     "watch": "tsc -w",
     "start:nodemon": "npm run build && npm run watch:nodemon",

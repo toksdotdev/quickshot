@@ -25,7 +25,11 @@ class ScreenshotController {
     }
 
     try {
-      this.queueService.add(ScreenshotAndMailJob.key, { url, email });
+      this.queueService.add(
+        ScreenshotAndMailJob.key,
+        { url, email },
+        { attempts: 3 }
+      );
       logger.info(
         `${ScreenshotAndMailJob.key} for [${url}] has been scheduled`
       );

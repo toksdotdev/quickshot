@@ -60,12 +60,12 @@ class RedisQueueService implements QueueService {
    * a generic options interface which will be used in the main QueueService
    * implementation).
    */
-  async add(name: string, data?: object): Promise<object> {
+  async add(name: string, data?: object, opts?: Queue.JobOptions): Promise<object> {
     const queue = this.queues.get(name);
 
     if (!queue) throw new UnknownJob(name);
 
-    return queue.add(data);
+    return queue.add(data, opts);
   }
 
   /**

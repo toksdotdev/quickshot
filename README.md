@@ -16,6 +16,12 @@ A dead-simple service that screenshots webpages, and sends the links to your ema
 - **Portability:** Docker build (with `docker-compose`) supported and can easily be scaled in any containerized environment.
 - **Monitoring:** Screenshot performance metric is currently scrapped with Prometheus. See [metrics](#get-metric-prometheus).
 
+## Demo
+
+Demo application is currently hosted at: https://quickshotter.herokuapp.com
+
+See [API Section](#api) on how to get started.
+
 ## Setup
 
 ### Prerequisite
@@ -39,6 +45,8 @@ You'll need to ensure you have the following installed:
 #### Production
 
 Ensure you have `docker-compose` installed on your machine.
+
+> For production, to specify env variables via a file, you'll need to name the file `.env.prod`
 
 To serve the application on the default port `3000`, simply run:
 

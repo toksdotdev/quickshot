@@ -8,6 +8,8 @@ services:
 
   app:
     build: .
+    security_opt:
+      - seccomp=./security/chrome.json
     ports:
       - 3000:3000
     links:

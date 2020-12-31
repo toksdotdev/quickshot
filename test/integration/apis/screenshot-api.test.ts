@@ -85,7 +85,11 @@ describe("Screenshot APIs", () => {
   test("Should schedule screenshot job in queue", async (done) => {
     const payload = { url, email };
     await request(app).post("/screenshot").send(payload).expect(200);
-    expect(queueService.add).toBeCalledWith(ScreenshotAndMailJob.key, payload);
+    expect(queueService.add).toBeCalledWith(
+      ScreenshotAndMailJob.key,
+      payload,
+      expect.any(Object)
+    );
     done();
   });
 
