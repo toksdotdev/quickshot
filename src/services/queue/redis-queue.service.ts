@@ -1,6 +1,7 @@
 import Redis from "ioredis";
 import QueueService from ".";
 import { AppConfig } from "config";
+import logger from "../../utils/logger";
 import Queue, { QueueOptions } from "bull";
 import { InvalidJobPath, UnknownJob } from "./exceptions";
 

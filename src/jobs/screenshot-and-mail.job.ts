@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Job } from "bull";
+import { AppConfig } from "config";
 import logger from "../utils/logger";
 import { Container } from "typescript-ioc";
 import MailService from "../services/mail.service";
 import { InvalidUrlException } from "../services/screenshot/exceptions";
 import ScreenshotService from "../services/screenshot/screenshot.service";
+
 
 type Data = {
   url: string;
@@ -23,7 +25,8 @@ class ScreenshotAndMailJob {
    * How many workers job should run in parallel.
    */
   public static get concurrency() {
-    return 5;
+    const config: AppConfig = Container.getValue("config");
+    return config.jobs.screenshotAndMail.workers;
   }
 
   /**

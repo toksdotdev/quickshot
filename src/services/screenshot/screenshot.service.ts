@@ -1,40 +1,65 @@
+import { Mutex } from "async-mutex";
 import logger from "../../utils/logger";
 import { CacheService } from "../cache";
 import * as metrics from "../../metrics";
 import { StorageService } from "../storage";
-import puppeteer, { Browser } from "puppeteer";
 import { InvalidUrlException } from "./exceptions";
+import puppeteer, { Browser, BrowserContext } from "puppeteer";
 
 class ScreenshotService {
   private browser?: Browser;
+  private icognitoBrowser?: BrowserContext;
+
+  private browserLock: Mutex;
 
   public static readonly cacheScreenshotPrefix = "valiu.screenshot-service.v1";
 
   constructor(
     private cacheService: CacheService,
     private storageService: StorageService
-  ) {}
+  ) {
+    this.browserLock = new Mutex();
+  }
 
   public getBrowser(): Browser {
     return this.browser;
+  }
+
+  public getBrowserLock(): Mutex {
+    return this.browserLock;
   }
 
   /**
    * Startup chromium browser instance.
    */
   public async setup() {
-    if (!this.browser) {
-      this.browser = await puppeteer.launch({
-        defaultViewport: { width: 1024, height: 768 },
-        args: [
-          // Required for Docker version of Puppeteer
-          "--no-sandbox",
-          "--disable-setuid-sandbox",
-          // This will write shared memory files into /tmp instead of /dev/shm,
-          // because Docker’s default for /dev/shm is 64MB
-          "--disable-dev-shm-usage",
-        ],
-      });
+    const releaseLock = await this.browserLock.acquire();
+
+    try {
+      if (this.browser == null) {
+        console.log("Starting browser");
+
+        // Launch Browser
+        this.browser = await puppeteer.launch({
+          headless: false,
+          defaultViewport: { width: 1024, height: 768 },
+          args: [
+            "--incognito",
+            "--disable-setuid-sandbox",
+            // This will write shared memory files into /tmp instead of /dev/shm,
+            // because Docker’s default for /dev/shm is 64MB
+            "--disable-dev-shm-usage",
+          ],
+        });
+
+        // Get Icognito context & delete initial browser instance
+        console.log("Switching browser to icognito mode");
+        this.icognitoBrowser = await this.browser.createIncognitoBrowserContext();
+        const pages = await this.browser.pages();
+        await pages[0].close();
+      }
+    } finally {
+      releaseLock();
     }
   }
 
@@ -42,7 +67,12 @@ class ScreenshotService {
    * Shutdown chromium browser instance.
    */
   public async shutdown() {
-    if (this.browser) {
+    if (this.icognitoBrowser != null) {
+      await this.icognitoBrowser.close();
+      this.icognitoBrowser = null;
+    }
+
+    if (this.browser != null) {
       await this.browser.close();
       this.browser.process().kill();
       this.browser = null;
@@ -109,20 +139,19 @@ class ScreenshotService {
    */
   async screenshot(url: string): Promise<Buffer> {
     await this.setup();
+    let page: puppeteer.Page;
 
     try {
-      const page = await this.browser.newPage();
-      const response = await page.goto(url, {
-        timeout: 10000,
-      });
+      page = await this.browser.newPage();
+      const response = await page.goto(url, { timeout: 30000 });
 
       if (!response.ok()) throw new InvalidUrlException(url);
       const image = await page.screenshot({ fullPage: true });
-      await page.close();
 
       metrics.urlScreenshots.inc({ success: 1 });
       return image;
     } catch (err) {
+      logger.error(err);
       metrics.urlScreenshots.inc({ failed: 1 });
 
       if ((err as Error).message.includes("ERR_NAME_NOT_RESOLVED")) {
@@ -130,6 +159,8 @@ class ScreenshotService {
       }
 
       throw err;
+    } finally {
+      if (page != null && !page.isClosed()) await page.close();
     }
   }
 }

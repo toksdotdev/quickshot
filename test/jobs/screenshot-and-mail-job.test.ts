@@ -14,6 +14,7 @@ import ScreenshotAndMailJob from "../../src/jobs/screenshot-and-mail.job";
 import ScreenshotService from "../../src/services/screenshot/screenshot.service";
 
 describe("Job: Screenshot and Mail", () => {
+  const jobWorkers = 5;
   const cachedUrl = "http://x.com";
   const email = "toks@gmail.com";
   const cachedUrlKey = "valiu.screenshot-service.v1.x.com";
@@ -40,6 +41,16 @@ describe("Job: Screenshot and Mail", () => {
 
     initializeIocAndApp([
       {
+        bindName: "config",
+        to: {
+          jobs: {
+            screenshotAndMail: {
+              workers: jobWorkers,
+            },
+          },
+        },
+      },
+      {
         bind: MailService,
         factory: () => mailService,
       },
@@ -50,13 +61,13 @@ describe("Job: Screenshot and Mail", () => {
     ]);
   });
 
-  afterAll(async (done) => {
+  beforeEach(async (done) => {
     await Container.get(ScreenshotService).shutdown();
     done();
   });
 
-  test("Should check job concurrency is greater than 0", async (done) => {
-    expect(ScreenshotAndMailJob.concurrency >= 0).toEqual(true);
+  test("Should check job concurrency is resolved correctly from IOC", async (done) => {
+    expect(ScreenshotAndMailJob.concurrency).toEqual(jobWorkers);
     done();
   });
 
@@ -92,7 +103,7 @@ describe("Job: Screenshot and Mail", () => {
     done();
   });
 
-  test("Should invalid URL mail", async (done) => {
+  test("Should failure mail when URL is invalid", async (done) => {
     const invalidUrl = "https://thislinkdoesntwork.people";
     const job = new ScreenshotAndMailJob();
 
@@ -111,5 +122,5 @@ describe("Job: Screenshot and Mail", () => {
     );
 
     done();
-  });
+  }, 20000);
 });

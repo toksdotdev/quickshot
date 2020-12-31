@@ -1,7 +1,7 @@
 {
   "name": "screenshot-service",
   "version": "1.0.0",
-  "description": "Screeshot URL via Rest API and get it delivered via mail",
+  "description": "Screenshot webpages via Rest API and sends the links to your mail",
   "repository": {
     "type": "git",
     "url": "https://github.com/tnkemdilim/screenshot-service"
@@ -73,5 +73,9 @@
   },
   "optionalDependencies": {
     "puppeteer": "^5.5.0"
-  }
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "engineStrict": true
 }

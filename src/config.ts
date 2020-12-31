@@ -26,6 +26,11 @@ const appConfig: AppConfig = {
       },
     },
   },
+  jobs: {
+    screenshotAndMail: {
+      workers: Number(process.env.QUEUE_WORKER_SCREENSHOT_AND_MAIL) || 5,
+    },
+  },
 };
 
 export default appConfig;

@@ -26,4 +26,9 @@ export type AppConfig = {
       };
     };
   };
+  jobs?: {
+    screenshotAndMail: {
+      workers: number;
+    };
+  };
 };

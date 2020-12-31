@@ -38,6 +38,13 @@ describe("Screenshot Service", () => {
     done();
   });
 
+  test("Should release browser lock after launching browser", async (done) => {
+    await screenshotService.setup();
+    expect(screenshotService.getBrowser()).not.toEqual(null);
+    expect(screenshotService.getBrowserLock().isLocked()).toEqual(false);
+    done();
+  });
+
   test("Should initialize and destroy the browser instance in hazardous manner", async (done) => {
     await screenshotService.setup();
     expect(screenshotService.getBrowser()).not.toEqual(null);
@@ -52,7 +59,7 @@ describe("Screenshot Service", () => {
     await screenshotService.setup();
     expect(screenshotService.getBrowser()).not.toEqual(null);
     done();
-  });
+  }, 20000);
 
   test("Should initializes browser instance automatically when about to screenshot.", async (done) => {
     const image = await screenshotService.screenshot(cachedUrl);
@@ -97,7 +104,7 @@ describe("Screenshot Service", () => {
     }
 
     done();
-  }, 10000);
+  }, 20000);
 
   test("Should have have consistence cache key.", async (done) => {
     expect(ScreenshotService.cacheScreenshotPrefix).toEqual(
