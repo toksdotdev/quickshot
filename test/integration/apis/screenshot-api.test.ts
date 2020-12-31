@@ -75,7 +75,7 @@ describe("Screenshot APIs", () => {
   test("Should reject local file URI.", async (done) => {
     const response = await request(app)
       .post("/screenshot")
-      .send({ url: "file:///users/valiu/documents/web/sample.html", email })
+      .send({ url: "file:///users/quickshot/documents/web/sample.html", email })
       .expect(400);
 
     expect(response.body.msg).toEqual("Invalid/Missing URI.");

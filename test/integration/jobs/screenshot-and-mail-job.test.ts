@@ -17,7 +17,7 @@ describe("Job: Screenshot and Mail", () => {
   const jobWorkers = 5;
   const cachedUrl = "http://x.com";
   const email = "toks@gmail.com";
-  const cachedUrlKey = "valiu.screenshot-service.v1.x.com";
+  const cachedUrlKey = "quickshot.screenshot-service.v1.x.com";
   const cachedUrlImageUrl = "https://cloudinary.com/d/x.com.png";
   const storedImageUrl = "https://cloudinary.com/d/uploaded-image.png";
 

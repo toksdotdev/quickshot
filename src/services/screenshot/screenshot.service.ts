@@ -12,7 +12,7 @@ class ScreenshotService {
 
   private browserLock: Mutex;
 
-  public static readonly cacheScreenshotPrefix = "valiu.screenshot-service.v1";
+  public static readonly cacheScreenshotPrefix = "quickshot.screenshot-service.v1";
 
   constructor(
     private cacheService: CacheService,

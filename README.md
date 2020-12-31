@@ -14,7 +14,7 @@ A dead-simple service that screenshots webpages, and sends the links to your ema
 - **Resilience:** Chromium instance automatically restarts on sudden crash without interrupting the job queue. Jobs that get affected are auto-retried.
 - **Reduced memory footprints:** Puppeteer is used under the hood to capture screeshots. To reduce memory footprint, **only one** Chromium instance exists throughout the service lifetime irrespective of the number of screenshot workers that are running.
 - **Portability:** Docker build (with `docker-compose`) supported and can easily be scaled in any containerized environment.
-- **Monitoring:** Screenshot performance metric is currently scrapped with Prometheus. See [available metrics](#monitoring).
+- **Monitoring:** Screenshot performance metric is currently scrapped with Prometheus. See [metrics](#get-metric-prometheus).
 
 ## Setup
 
@@ -50,11 +50,10 @@ This should serve application on the following URL: `https://localhost:3000`
 
 #### Development
 
-To run a development server, simply run:
-
-```bash
-npm run start:concurrenct
-```
+To run a development server:
+- Run `npm i` (if you have chrome installed, run `npm i --no-optional`).
+- Update your environment variables.
+- Run `npm run start:concurrenct` (watches and restarts the server with nodemon) 
 
 > Don't forget to update your `REDIS_URL` to your local instance.
 

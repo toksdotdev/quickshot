@@ -14,11 +14,11 @@ describe("Screenshot Service", () => {
   let screenshotService: ScreenshotService;
 
   const cachedUrl = "http://x.com";
-  const cachedUrlKey = "valiu.screenshot-service.v1.x.com";
+  const cachedUrlKey = "quickshot.screenshot-service.v1.x.com";
   const cachedUrlImageUrl = "https://cloudinary.com/d/x.com.png";
 
   const uncachedUrl = "http://captive.apple.com";
-  const uncachedUrlKey = "valiu.screenshot-service.v1.captive.apple.com";
+  const uncachedUrlKey = "quickshot.screenshot-service.v1.captive.apple.com";
   const storedImageUrl = "https://cloudinary.com/d/uploaded-image.png";
 
   beforeEach(() => {
@@ -108,7 +108,7 @@ describe("Screenshot Service", () => {
 
   test("Should have have consistence cache key.", async (done) => {
     expect(ScreenshotService.cacheScreenshotPrefix).toEqual(
-      "valiu.screenshot-service.v1"
+      "quickshot.screenshot-service.v1"
     );
     done();
   });
