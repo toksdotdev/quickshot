@@ -19,7 +19,8 @@
     "watch:test": "npm run test -- --watchAll",
     "test": "jest --forceExit --coverage --verbose --detectOpenHandles",
     "start:concurrent": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\" \"npm run watch\" \"PUPPETEER_PRODUCT=chrome npm run watch:nodemon\"",
-    "load-test": "k6 run --vus 1000 --iterations 10000 ./test/load-testing/index.ts"
+    "load-test": "k6 run --vus 1000 --iterations 10000 ./test/load-testing/index.ts",
+    "coverage": "npm run test && cat ./coverage/lcov.info | coveralls"
   },
   "dependencies": {
     "@sideway/address": "^4.1.0",
@@ -60,6 +61,7 @@
     "@typescript-eslint/parser": "^2.3.1",
     "chai": "^4.2.0",
     "concurrently": "^5.3.0",
+    "coveralls": "^3.1.0",
     "eslint": "^6.4.0",
     "ioredis-mock": "^5.2.0",
     "jest": "^26.6.3",

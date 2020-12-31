@@ -1,5 +1,9 @@
 # Quickshot
 
+[![Build Status](https://travis-ci.com/TNkemdilim/quickshot.svg?token=iPj2zpjbHethzECCzCa7&branch=main)](https://travis-ci.com/TNkemdilim/quickshot)
+
+[![Coverage Status](https://coveralls.io/repos/github/TNkemdilim/quickshot/badge.svg?t=XZJcUa)](https://coveralls.io/github/TNkemdilim/quickshot)
+
 A dead-simple service that screenshots webpages via REST API, and sends the links to your email.
 
 ## Design Goals
@@ -97,6 +101,14 @@ Currently, the screenshot queue runs by default with `5 workers`. If you'll need
 
 > NOTE: No. of workers equals the **maximum** no. of chromium tabs that can be opened at any point in time, t.
 
+# Tests
+
+All tests are ran using Jest.
+
+- Coverage report can be found on [Coverall](https://coveralls.io/github/TNkemdilim/quickshot).
+
+- Track build test status on [Travis](https://travis-ci.com/github/TNkemdilim/quickshot).
+
 ## Load Testing
 
 Load tests are currently carried out with [k6](https://k6.io/). To run a basic HTTP load test:
@@ -120,9 +132,16 @@ To configure load testing paramaters, see [supported CLI parameters for k6](http
 k6 run --vu 1000 <add more parameters here> ./test/load-testing/index.ts
 ```
 
-## Continous Integration
+### Specification
 
-Test suites are currently ran on Travis. Track the builds [here](https://travis-ci.com/github/TNkemdilim/quickshot).
+Here are the machine specs for the sample load testing shown below:
+
+- MacBook Pro (13-inch, 2019, Four Thunderbolt 3 ports)
+- 2.8 GHz Intel Core i7
+- 16 GB 2133 MHz LPDDR3
+
+### Report
+
 
 # Contributing
 
