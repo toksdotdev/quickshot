@@ -1,4 +1,4 @@
-# Quickshot
+# 📸 Quickshot
 
 [![Build Status](https://travis-ci.com/TNkemdilim/quickshot.svg?token=iPj2zpjbHethzECCzCa7&branch=main)](https://travis-ci.com/TNkemdilim/quickshot)
 [![Coverage Status](https://coveralls.io/repos/github/TNkemdilim/quickshot/badge.svg?t=XZJcUa)](https://coveralls.io/github/TNkemdilim/quickshot)
