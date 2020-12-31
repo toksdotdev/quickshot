@@ -1,5 +1,5 @@
-import MailService from "../../src/services/mail.service";
-import { mockMailService } from "../common/mocks/services";
+import MailService from "../../../src/services/mail.service";
+import { mockMailService } from "../../common/mocks/services";
 
 describe("Mail Service", () => {
   let mailService: MailService;

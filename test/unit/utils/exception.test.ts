@@ -1,4 +1,4 @@
-import { Exception } from "../../src/utils/exception";
+import { Exception } from "../../../src/utils/exception";
 
 describe("Exception", () => {
   test("Should initialise custom exception class correctly", async (done) => {

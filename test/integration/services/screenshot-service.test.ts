@@ -2,11 +2,11 @@ import {
   mockCacheService,
   mockStorageService,
   mockScreenshotService,
-} from "../common/mocks/services";
-import { CacheService } from "../../src/services/cache";
-import { StorageService } from "../../src/services/storage";
-import { InvalidUrlException } from "../../src/services/screenshot/exceptions";
-import ScreenshotService from "../../src/services/screenshot/screenshot.service";
+} from "../../common/mocks/services";
+import { CacheService } from "../../../src/services/cache";
+import { StorageService } from "../../../src/services/storage";
+import { InvalidUrlException } from "../../../src/services/screenshot/exceptions";
+import ScreenshotService from "../../../src/services/screenshot/screenshot.service";
 
 describe("Screenshot Service", () => {
   let cacheService: CacheService;

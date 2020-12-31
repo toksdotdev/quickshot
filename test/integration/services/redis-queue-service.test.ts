@@ -2,12 +2,12 @@ import { resolve } from "path";
 import {
   UnknownJob,
   InvalidJobPath,
-} from "../../src/services/queue/exceptions";
-import RedisQueueService from "../../src/services/queue/redis-queue.service";
+} from "../../../src/services/queue/exceptions";
+import RedisQueueService from "../../../src/services/queue/redis-queue.service";
 
 describe("Redis Queue Service", () => {
   let queueService: RedisQueueService;
-  const jobDirectory = resolve(__dirname, "../common/data/jobs");
+  const jobDirectory = resolve(__dirname, "../../common/data/jobs");
 
   beforeEach(() => {
     queueService = new RedisQueueService({ redis: { connectionString: "" } });

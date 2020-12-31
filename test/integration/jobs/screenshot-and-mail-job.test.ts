@@ -3,15 +3,15 @@ import {
   mockMailService,
   mockScreenshotService,
   mockStorageService,
-} from "../common/mocks/services";
+} from "../../common/mocks/services";
 import { Job } from "bull";
 import { Container } from "typescript-ioc";
-import { CacheService } from "../../src/services/cache";
-import { initializeIocAndApp } from "../common/mocks/ioc";
-import MailService from "../../src/services/mail.service";
-import { StorageService } from "../../src/services/storage";
-import ScreenshotAndMailJob from "../../src/jobs/screenshot-and-mail.job";
-import ScreenshotService from "../../src/services/screenshot/screenshot.service";
+import { CacheService } from "../../../src/services/cache";
+import { initializeIocAndApp } from "../../common/mocks/ioc";
+import MailService from "../../../src/services/mail.service";
+import { StorageService } from "../../../src/services/storage";
+import ScreenshotAndMailJob from "../../../src/jobs/screenshot-and-mail.job";
+import ScreenshotService from "../../../src/services/screenshot/screenshot.service";
 
 describe("Job: Screenshot and Mail", () => {
   const jobWorkers = 5;

@@ -1,4 +1,4 @@
-import app from "../../src/app";
+import app from "../../../src/app";
 import request from "supertest";
 
 describe("Prometheus Metrics", () => {

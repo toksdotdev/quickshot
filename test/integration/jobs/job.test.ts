@@ -1,7 +1,7 @@
 import { resolve } from "path";
-import jobs from "../../src/jobs";
-import { registerJobs } from "../../src/utils/jobs";
-import RedisQueueService from "../../src/services/queue/redis-queue.service";
+import jobs from "../../../src/jobs";
+import { registerJobs } from "../../../src/utils/jobs";
+import RedisQueueService from "../../../src/services/queue/redis-queue.service";
 
 describe("Job", () => {
   let queueService: RedisQueueService;
@@ -11,7 +11,7 @@ describe("Job", () => {
     queueService = new RedisQueueService({ redis: { connectionString: "" } });
 
     // Mock jobs
-    jobDirectory = resolve(__dirname, "../../src/jobs");
+    jobDirectory = resolve(__dirname, "../../../src/jobs");
     for (const job of Object.values(jobs)) {
       jest.mock(resolve(jobDirectory, job), () => ({ default: () => {} }));
     }
