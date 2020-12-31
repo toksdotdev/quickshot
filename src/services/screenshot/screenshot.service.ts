@@ -41,7 +41,6 @@ class ScreenshotService {
 
         // Launch Browser
         this.browser = await puppeteer.launch({
-          headless: false,
           defaultViewport: { width: 1024, height: 768 },
           args: [
             "--incognito",

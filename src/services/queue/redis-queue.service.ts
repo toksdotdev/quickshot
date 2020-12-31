@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Redis from "ioredis";
 import QueueService from ".";
 import { AppConfig } from "config";
-import logger from "../../utils/logger";
 import Queue, { QueueOptions } from "bull";
 import { InvalidJobPath, UnknownJob } from "./exceptions";
 
@@ -27,7 +27,6 @@ class RedisQueueService implements QueueService {
   }
 
   async register(jobPath: string) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let Job: any;
 
     try {

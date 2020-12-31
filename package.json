@@ -19,7 +19,7 @@
     "watch:test": "npm run test -- --watchAll",
     "test": "jest --forceExit --coverage --verbose --detectOpenHandles",
     "start:concurrent": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold\" \"npm run watch\" \"PUPPETEER_PRODUCT=chrome npm run watch:nodemon\"",
-    "load-test": "npx ts-node test/load-testing/index.ts"
+    "load-test": "k6 run --vus 1000 --iterations 10000 ./test/load-testing/index.ts"
   },
   "dependencies": {
     "@sideway/address": "^4.1.0",
