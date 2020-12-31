@@ -7,7 +7,7 @@ const appConfig: AppConfig = {
   },
   puppeteer: {
     launchInSandbox: JSON.parse(
-      process.env.LAUNCH_CHROMIUM_IN_SANDBOX || "false"
+      process.env.LAUNCH_CHROMIUM_IN_SANDBOX || "true"
     ),
   },
   redis: {

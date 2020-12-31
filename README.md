@@ -9,7 +9,7 @@ A dead-simple service that screenshots webpages, and sends the links to your ema
 
 ## Design Goals
 
-- **Security:** All webpages are opened both in _sandboxed chromium_ and _icognito mode_.
+- **Security:** All webpages are opened both in _sandboxed and \_icognito mode_ of chromium.
 - **Scalability:** Handles ~2.3k reqs/s on a single node. For load performance, see [load testing](#load-testing).
 - **Resilience:** Chromium instance automatically restarts on sudden crash without interrupting the job queue. Jobs that get affected are auto-retried.
 - **Reduced memory footprints:** Puppeteer is used under the hood to capture screeshots. To reduce memory footprint, **only one** Chromium instance exists throughout the service lifetime irrespective of the number of screenshot workers that are running.
@@ -39,6 +39,8 @@ You'll need to ensure you have the following installed:
 - Get a sample SMTP credentials at [Ethereal](https://ethereal.email), and update env variables with prefix `MAIL_SMTP_` respectively.
 - Set `MAIL_DEFAULT` to `smtp`.
 - Set `REDIS_URL` to `redis` (only if you'll be running the app via `docker-compose` for simplicity sake).
+
+> NOTE: If you want to start chromium in `--no-sandbox` mode, simply specify the env `LAUNCH_CHROMIUM_IN_SANDBOX=false`. By default, it is set to `true`.
 
 ### Starting Up
 

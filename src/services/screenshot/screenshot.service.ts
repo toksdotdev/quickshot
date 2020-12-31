@@ -48,7 +48,7 @@ class ScreenshotService {
           args: [
             "--incognito",
             // "--disable-setuid-sandbox",
-            this.config?.puppeteer.launchInSandbox ? "--no-sandbox" : "",
+            this.config?.puppeteer.launchInSandbox ? "" : "--no-sandbox",
             // This will write shared memory files into /tmp instead of /dev/shm,
             // because Docker’s default for /dev/shm is 64MB
             "--disable-dev-shm-usage",
