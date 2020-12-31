@@ -1,4 +1,5 @@
 import http from "k6/http";
+import { check } from "k6";
 
 const domains = open("./data/domains.txt").toString().split("\n");
 
@@ -15,5 +16,5 @@ export default function () {
   };
 
   const res = http.post("http://localhost:3000/screenshot", payload, params);
-  console.log(JSON.stringify(res.body));
+  check(res, { "Status was 200": (r) => r.status == 200 });
 }

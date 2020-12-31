@@ -10,7 +10,7 @@ A dead-simple service that screenshots webpages, and sends the links to your ema
 ## Design Goals
 
 - **Security:** All webpages are opened both in _sandboxed chromium_ and _icognito mode_.
-- **Scalability:** Easily handles ~2086 reqs/s on a single node. For load performance, see [load-testing](#load-testing).
+- **Scalability:** Handles ~2.3k reqs/s on a single node. For load performance, see [load-testing](#load-testing).
 - **Resilience:** Chromium instance automatically restarts on sudden crash without interrupting the job queue. Jobs that get affected are auto-retried.
 - **Reduced memory footprints:** Puppeteer is used under the hood to capture screeshots. To reduce memory footprint, **only one** Chromium instance exists throughout the service lifetime irrespective of the number of screenshot workers that are running.
 - **Portability:** Docker build (with `docker-compose`) supported and can easily be scaled in any containerized environment.
@@ -51,9 +51,10 @@ This should serve application on the following URL: `https://localhost:3000`
 #### Development
 
 To run a development server:
+
 - Run `npm i` (if you have chrome installed, run `npm i --no-optional`).
 - Update your environment variables.
-- Run `npm run start:concurrenct` (watches and restarts the server with nodemon) 
+- Run `npm run start:concurrenct` (watches and restarts the server with nodemon)
 
 > Don't forget to update your `REDIS_URL` to your local instance.
 
@@ -125,7 +126,7 @@ The default load test uses the folllowing parameters:
 To configure load testing paramaters, see [supported CLI parameters for k6](https://k6.io/docs/getting-started/running-k6), and run as follows:
 
 ```bash
-k6 run --vu 1000 <add more parameters here> ./test/load-testing/index.ts
+k6 run --vus 1000 <add more parameters here> ./test/load-testing/index.ts
 ```
 
 ### Specification
@@ -135,6 +136,10 @@ Here are the machine specs for the sample load testing shown below:
 - MacBook Pro (13-inch, 2019, Four Thunderbolt 3 ports)
 - 2.8 GHz Intel Core i7
 - 16 GB 2133 MHz LPDDR3
+
+## Report
+
+![Quickshot Load Testing Report](https://res.cloudinary.com/dsc/image/upload/v1609408572/quickshot-load-testing.png)
 
 ## Contributing
 
