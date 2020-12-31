@@ -22,6 +22,8 @@ Demo application is currently hosted at: https://quickshotter.herokuapp.com
 
 See [API Section](#api) on how to get started.
 
+> NOTE: Don't pass in any sensitive info in demo app.
+
 ## Setup
 
 ### Prerequisite

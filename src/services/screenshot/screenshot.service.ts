@@ -146,7 +146,10 @@ class ScreenshotService {
 
     try {
       page = await this.browser.newPage();
-      const response = await page.goto(url, { timeout: 30000 });
+      const response = await page.goto(url, {
+        timeout: 20000,
+        waitUntil: "networkidle0",
+      });
 
       if (!response.ok()) throw new InvalidUrlException(url);
       const image = await page.screenshot({ fullPage: true });
