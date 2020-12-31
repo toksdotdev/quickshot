@@ -18,7 +18,7 @@ A dead-simple service that screenshots webpages, and sends the links to your ema
 
 ## Demo
 
-Demo application is currently hosted at: https://quickshotter.herokuapp.com
+Demo application is currently hosted at: https://quickshots.herokuapp.com
 
 See [API Section](#api) on how to get started.
 
