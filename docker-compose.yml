@@ -6,7 +6,7 @@ services:
     expose:
       - 6379
 
-  app:
+  quickshot:
     build: .
     security_opt:
       - seccomp=./security/chrome.json

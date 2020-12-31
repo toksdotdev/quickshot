@@ -1,4 +1,5 @@
 import { Mutex } from "async-mutex";
+import { AppConfig } from "config";
 import logger from "../../utils/logger";
 import { CacheService } from "../cache";
 import * as metrics from "../../metrics";
@@ -12,11 +13,13 @@ class ScreenshotService {
 
   private browserLock: Mutex;
 
-  public static readonly cacheScreenshotPrefix = "quickshot.screenshot-service.v1";
+  public static readonly cacheScreenshotPrefix =
+    "quickshot.screenshot-service.v1";
 
   constructor(
     private cacheService: CacheService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private config: AppConfig
   ) {
     this.browserLock = new Mutex();
   }
@@ -45,6 +48,7 @@ class ScreenshotService {
           args: [
             "--incognito",
             // "--disable-setuid-sandbox",
+            this.config?.puppeteer.launchInSandbox ? "--no-sandbox" : "",
             // This will write shared memory files into /tmp instead of /dev/shm,
             // because Docker’s default for /dev/shm is 64MB
             "--disable-dev-shm-usage",

@@ -21,7 +21,8 @@ const mapping: Array<ContainerConfiguration> = [
     factory: (ctx) =>
       new ScreenshotService(
         ctx.resolve(RedisService),
-        ctx.resolve(StorageService)
+        ctx.resolve(StorageService),
+        Container.getValue("config")
       ),
     scope: Scope.Singleton,
   },

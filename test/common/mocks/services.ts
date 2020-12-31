@@ -23,7 +23,10 @@ export const mockStorageService = ({ uploadResponse = null }) =>
 export const mockScreenshotService = ({
   cacheService = mockCacheService({}) as CacheService,
   storageService = mockStorageService({}) as StorageService,
-}) => new ScreenshotService(cacheService, storageService);
+}) =>
+  new ScreenshotService(cacheService, storageService, {
+    puppeteer: { launchInSandbox: false },
+  });
 
 export const mockMailService = (opts: { sendImpl?: any }) => {
   const config: AppConfig = {

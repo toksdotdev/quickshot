@@ -5,6 +5,9 @@ export type AppConfig = {
     env: string;
     port: number;
   };
+  puppeteer?: {
+    launchInSandbox: boolean
+  },
   redis?: {
     connectionString: string;
   };

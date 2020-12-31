@@ -5,6 +5,9 @@ const appConfig: AppConfig = {
     port: Number(process.env.PORT) || 3000,
     env: process.env.NODE_ENV || "production",
   },
+  puppeteer: {
+    launchInSandbox: JSON.parse(process.env.LAUNCH_CHROMIUM_IN_SANDBOX),
+  },
   redis: {
     connectionString: process.env.REDIS_URL,
   },
