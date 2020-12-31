@@ -6,7 +6,9 @@ const appConfig: AppConfig = {
     env: process.env.NODE_ENV || "production",
   },
   puppeteer: {
-    launchInSandbox: JSON.parse(process.env.LAUNCH_CHROMIUM_IN_SANDBOX),
+    launchInSandbox: JSON.parse(
+      process.env.LAUNCH_CHROMIUM_IN_SANDBOX || "false"
+    ),
   },
   redis: {
     connectionString: process.env.REDIS_URL,
@@ -21,7 +23,7 @@ const appConfig: AppConfig = {
     from: process.env.MAIL_FROM,
     smtp: {
       host: process.env.MAIL_SMTP_HOST,
-      secure: JSON.parse(process.env.MAIL_SMTP_SECURE),
+      secure: JSON.parse(process.env.MAIL_SMTP_SECURE || "false"),
       port: Number(process.env.MAIL_SMTP_PORT),
       auth: {
         user: process.env.MAIL_SMTP_AUTH_USER,
@@ -31,7 +33,7 @@ const appConfig: AppConfig = {
   },
   jobs: {
     screenshotAndMail: {
-      workers: Number(process.env.QUEUE_WORKER_SCREENSHOT_AND_MAIL) || 5,
+      workers: Number(process.env.QUEUE_WORKER_SCREENSHOT_AND_MAIL || 5),
     },
   },
 };
